@@ -1,4 +1,4 @@
-// Base price per kg for each crop (YOU: adjust these values to the real in-game rates)
+// Base price per kg for each crop (adjust these to in-game values)
 const basePrices = {
   carrot:      1.00,
   strawberry:  1.00,
@@ -34,23 +34,20 @@ const multipliers = {
 };
 
 function handleExclusive(selected) {
-  if (selected === 'gold' && document.getElementById('gold').checked) {
-    document.getElementById('rainbow').checked = false;
-  }
-  if (selected === 'rainbow' && document.getElementById('rainbow').checked) {
-    document.getElementById('gold').checked = false;
-  }
+  if (selected === 'gold' && gold.checked) rainbow.checked = false;
+  if (selected === 'rainbow' && rainbow.checked) gold.checked = false;
   calculatePrice();
 }
 
-document.querySelectorAll('input, select').forEach(el => {
+const inputs = Array.from(document.querySelectorAll('input, select'));
+inputs.forEach(el => {
   el.addEventListener('input', calculatePrice);
   el.addEventListener('change', calculatePrice);
 });
 
 function calculatePrice() {
-  const crop   = document.getElementById('crop').value;
-  const weight = parseFloat(document.getElementById('weight').value) || 0;
+  const crop   = cropSelect.value;
+  const weight = parseFloat(weightInput.value) || 0;
   let price    = basePrices[crop] * weight;
 
   for (let mut in multipliers) {
@@ -59,8 +56,15 @@ function calculatePrice() {
     }
   }
 
-  document.getElementById('price').textContent = price.toFixed(2);
+  priceOutput.textContent = price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// Initialize display
+// Elements
+const cropSelect  = document.getElementById('crop');
+const weightInput = document.getElementById('weight');
+const priceOutput = document.getElementById('price');
+const gold        = document.getElementById('gold');
+const rainbow     = document.getElementById('rainbow');
+
+// Init
 calculatePrice();
