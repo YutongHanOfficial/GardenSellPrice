@@ -1,12 +1,11 @@
-// Per-kg rates (š per kg), plus the special carrot piecewise
+// Per-kg rates (š per kg) and carrot piecewise
 const PRICE_PER_KG = {
-  carrot:      null,   // handled by piecewise below
+  carrot:      null,
   strawberry:  65,
   blueberry:   120,
   orangeTulip: 19000,
   daffodil:    5800,
-  // all others fall back to basePrices if you prefer, or you can add more here
-  tomato:      2000,   // example: 2 š/g → 2000 š/kg
+  tomato:      2000,
   corn:        2000,
   raspberry:   2000,
   watermelon:  3000,
@@ -26,63 +25,82 @@ const PRICE_PER_KG = {
   beanstalk:   10000
 };
 
+// all mutation multipliers
 const multipliers = {
-  gold:     20,
-  rainbow:  50,
-  shocked:  100,
-  frozen:   10,
-  bloodlit: 4
+  gold:       20,
+  rainbow:    50,
+  shocked:   100,
+  wet:         2,
+  chilled:     2,
+  frozen:     10,
+  bloodlit:    4,
+  chocolate:   2,
+  moonlit:     2,
+  zombified:  25,
+  celestial: 120,
+  disco:     125
+};
+
+// groups for mutual-exclusivity
+const exclusives = {
+  // only one of these at a time
+  gold:    ['gold','rainbow'],
+  rainbow: ['gold','rainbow'],
+  // only one of wet, chilled, frozen
+  wet:     ['wet','chilled','frozen'],
+  chilled: ['wet','chilled','frozen'],
+  frozen:  ['wet','chilled','frozen']
 };
 
 // grab elements
 const cropSelect  = document.getElementById('crop');
 const weightInput = document.getElementById('weight');
 const priceOutput = document.getElementById('price');
-const gold        = document.getElementById('gold');
-const rainbow     = document.getElementById('rainbow');
 
-// mutually-exclusive gold/rainbow
+// handler to enforce exclusivity
 function handleExclusive(selected) {
-  if (selected === 'gold'   && gold.checked)    rainbow.checked = false;
-  if (selected === 'rainbow'&& rainbow.checked) gold.checked    = false;
+  const group = exclusives[selected];
+  if (!group) return;
+  const me = document.getElementById(selected).checked;
+  if (!me) return;
+  group.forEach(id => {
+    if (id !== selected) {
+      document.getElementById(id).checked = false;
+    }
+  });
   calculatePrice();
 }
 
 // listen for changes
-Array.from(document.querySelectorAll('input, select')).forEach(el => {
-  el.addEventListener('input', calculatePrice);
+document.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('input',  calculatePrice);
   el.addEventListener('change', calculatePrice);
 });
 
 function calculatePrice() {
-  const crop   = cropSelect.value;
-  const w      = parseFloat(weightInput.value) || 0;
+  const crop = cropSelect.value;
+  const w    = parseFloat(weightInput.value) || 0;
   let price;
 
   if (crop === 'carrot') {
-    // carrot piecewise rule
-    if (w < 0.27) {
-      price = 18;
-    } else {
-      const raw = 172.7 * w - 26.6;
-      price = Math.floor(raw + 0.5);
-    }
+    // carrot piecewise
+    price = w < 0.27
+      ? 18
+      : Math.floor(172.7 * w - 26.6 + 0.5);
   } else {
-    // linear per-kg for everything else
-    const rate = PRICE_PER_KG[crop] ?? 0;
+    const rate = PRICE_PER_KG[crop] || 0;
     price = Math.floor(rate * w + 0.5);
   }
 
-  // apply mutations
+  // apply every checked mutation
   for (let mut in multipliers) {
     if (document.getElementById(mut).checked) {
       price *= multipliers[mut];
     }
   }
 
-  // final integer
   priceOutput.textContent = Math.round(price);
 }
 
-// init
+// initialize
 calculatePrice();
