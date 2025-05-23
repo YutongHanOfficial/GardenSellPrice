@@ -1,6 +1,6 @@
 // Base price per kg for each crop (adjust these to in-game values)
 const basePrices = {
-  carrot:      1.00,
+  carrot:      1.00,  // unused by carrot special code
   strawberry:  1.00,
   blueberry:   1.50,
   orangeTulip: 1.50,
@@ -39,32 +39,49 @@ function handleExclusive(selected) {
   calculatePrice();
 }
 
-const inputs = Array.from(document.querySelectorAll('input, select'));
-inputs.forEach(el => {
-  el.addEventListener('input', calculatePrice);
-  el.addEventListener('change', calculatePrice);
-});
-
-function calculatePrice() {
-  const crop   = cropSelect.value;
-  const weight = parseFloat(weightInput.value) || 0;
-  let price    = basePrices[crop] * weight;
-
-  for (let mut in multipliers) {
-    if (document.getElementById(mut).checked) {
-      price *= multipliers[mut];
-    }
-  }
-
-  priceOutput.textContent = price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-// Elements
+// Grab elements once
 const cropSelect  = document.getElementById('crop');
 const weightInput = document.getElementById('weight');
 const priceOutput = document.getElementById('price');
 const gold        = document.getElementById('gold');
 const rainbow     = document.getElementById('rainbow');
 
-// Init
+// Listen for any changes
+Array.from(document.querySelectorAll('input, select'))
+     .forEach(el => {
+       el.addEventListener('input', calculatePrice);
+       el.addEventListener('change', calculatePrice);
+     });
+
+function calculatePrice() {
+  const crop   = cropSelect.value;
+  const weight = parseFloat(weightInput.value) || 0;
+  let price;
+
+  if (crop === 'carrot') {
+    // piecewise carrot pricing:
+    if (weight < 0.27) {
+      price = 18;
+    } else {
+      const raw = 172.7 * weight - 26.6;
+      price = Math.floor(raw + 0.5);
+    }
+  } else {
+    // simple linear rule for others:
+    price = basePrices[crop] * weight;
+    price = Math.floor(price + 0.5);
+  }
+
+  // apply mutations
+  for (let mut in multipliers) {
+    if (document.getElementById(mut).checked) {
+      price *= multipliers[mut];
+    }
+  }
+
+  // final is whole sheckles
+  priceOutput.textContent = Math.round(price);
+}
+
+// initialize
 calculatePrice();
