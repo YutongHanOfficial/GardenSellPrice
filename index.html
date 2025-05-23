@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grow a Garden: Fruit Sell Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Grow a Garden: Fruit Sell Price Calculator</h1>
+    <label>
+      Weight (kg):
+      <input type="number" id="weight" min="0" step="0.01" />
+    </label>
+
+    <fieldset>
+      <legend>Mutations (choose all that apply):</legend>
+
+      <label><input type="checkbox" id="gold" onchange="handleExclusive('gold')"> Gold ×20</label>
+      <label><input type="checkbox" id="rainbow" onchange="handleExclusive('rainbow')"> Rainbow ×50</label>
+      <label><input type="checkbox" id="shocked"> Shocked ×100</label>
+      <label><input type="checkbox" id="frozen"> Frozen ×10</label>
+      <label><input type="checkbox" id="bloodlit"> Bloodlit ×4</label>
+    </fieldset>
+
+    <div class="result">
+      <h2>Sell Price: <span id="price">0</span></h2>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
