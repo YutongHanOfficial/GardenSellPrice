@@ -3,12 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grow a Garden: Fruit Sell Calculator</title>
+  <title>Grow a Garden: Fruit Sell Price Calculator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Grow a Garden: Fruit Sell Price Calculator</h1>
+    <h1>Grow a Garden: Sell Price Calculator</h1>
+
+    <label>
+      Crop:
+      <select id="crop">
+        <optgroup label="Common">
+          <option value="carrot">Carrot</option>
+          <option value="strawberry">Strawberry</option>
+        </optgroup>
+        <optgroup label="Uncommon">
+          <option value="blueberry">Blueberry</option>
+          <option value="orangeTulip">Orange Tulip</option>
+        </optgroup>
+        <optgroup label="Rare">
+          <option value="tomato">Tomato</option>
+          <option value="corn">Corn</option>
+          <option value="daffodil">Daffodil</option>
+          <option value="raspberry">Raspberry</option>
+        </optgroup>
+        <optgroup label="Legendary">
+          <option value="watermelon">Watermelon</option>
+          <option value="pumpkin">Pumpkin</option>
+          <option value="apple">Apple</option>
+          <option value="bamboo">Bamboo</option>
+        </optgroup>
+        <optgroup label="Mythical">
+          <option value="coconut">Coconut</option>
+          <option value="cactus">Cactus</option>
+          <option value="dragonFruit">Dragon Fruit</option>
+          <option value="mango">Mango</option>
+          <option value="peach">Peach</option>
+          <option value="pineapple">Pineapple</option>
+        </optgroup>
+        <optgroup label="Divine">
+          <option value="grape">Grape</option>
+          <option value="mushroom">Mushroom</option>
+          <option value="pepper">Pepper</option>
+          <option value="cacao">Cacao</option>
+        </optgroup>
+        <optgroup label="Prismatic">
+          <option value="beanstalk">Beanstalk</option>
+        </optgroup>
+      </select>
+    </label>
+
     <label>
       Weight (kg):
       <input type="number" id="weight" min="0" step="0.01" />
@@ -16,7 +60,6 @@
 
     <fieldset>
       <legend>Mutations (choose all that apply):</legend>
-
       <label><input type="checkbox" id="gold" onchange="handleExclusive('gold')"> Gold ×20</label>
       <label><input type="checkbox" id="rainbow" onchange="handleExclusive('rainbow')"> Rainbow ×50</label>
       <label><input type="checkbox" id="shocked"> Shocked ×100</label>
@@ -28,6 +71,7 @@
       <h2>Sell Price: <span id="price">0</span></h2>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
